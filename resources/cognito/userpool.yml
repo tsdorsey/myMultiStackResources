@@ -1,0 +1,36 @@
+Resources:
+  userpool:
+    Type: "AWS::Cognito::UserPool"
+    Properties:
+      UserPoolName: ${self:service}-${self:provider.stage}-userpool
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: true
+        UnusedAccountValidityDays: 7
+      AliasAttributes:
+        - email
+        - phone_number
+        - preferred_username
+      LambdaConfig:
+        PreSignUp:
+          "Fn::GetAtt":
+            - CognitoAutoConfirmLambdaFunction
+            - Arn
+      MfaConfiguration: OFF
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 10
+          RequireLowercase: false
+          RequireNumbers: false
+          RequireSymbols: false
+          RequireUppercase: false
+
+  userpoolClient:
+    Type: "AWS::Cognito::UserPoolClient"
+    Properties:
+      ClientName: ${self:service}-${self:provider.stage}-userpoolClient
+      UserPoolId:
+        Ref: userpool
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ADMIN_NO_SRP_AUTH
+      RefreshTokenValidity: 90

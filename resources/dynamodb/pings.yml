@@ -1,0 +1,40 @@
+Resources:
+  pingsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ${self:service}-${self:provider.stage}-pings
+      SSESpecification:
+        SSEEnabled: False
+      AttributeDefinitions:
+        -
+          AttributeName: ip
+          AttributeType: S
+        -
+          AttributeName: when
+          AttributeType: N
+      KeySchema:
+        -
+          AttributeName: ip
+          KeyType: HASH
+        -
+          AttributeName: when
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+
+Outputs:
+  pingsTableArn:
+    Description: The ARN for the pings Table
+    Value:
+      "Fn::GetAtt":
+        - pingsTable
+        - Arn
+    Export:
+      Name: ${self:service}-${self:provider.stage}-pingsTableArn
+  pingsTableName:
+    Description: The Name of the pings Table
+    Value:
+      Ref: pingsTable
+    Export:
+      Name: ${self:service}-${self:provider.stage}-pingsTableName

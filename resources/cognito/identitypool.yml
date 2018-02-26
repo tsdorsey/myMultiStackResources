@@ -1,0 +1,16 @@
+Resources:
+  identitypool:
+    Type: "AWS::Cognito::IdentityPool"
+    Properties:
+      IdentityPoolName: ${self:service}_${self:provider.stage}_identitypool
+      AllowUnauthenticatedIdentities: true
+      CognitoIdentityProviders:
+        -
+          ClientId:
+            Ref:
+              userpoolClient
+          ProviderName:
+            "Fn::GetAtt":
+              - userpool
+              - ProviderName
+          ServerSideTokenCheck: true

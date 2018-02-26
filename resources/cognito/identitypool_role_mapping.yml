@@ -1,0 +1,16 @@
+Resources:
+  identitypoolRoleMapping:
+    Type: "AWS::Cognito::IdentityPoolRoleAttachment"
+    Properties:
+      IdentityPoolId:
+        Ref:
+          identitypool
+      Roles:
+        authenticated:
+          "Fn::GetAtt":
+            - cognitoAuthorizedRole
+            - Arn
+        unauthenticated:
+          "Fn::GetAtt":
+            - cognitoUnauthorizedRole
+            - Arn

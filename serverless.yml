@@ -1,0 +1,27 @@
+frameworkVersion: "=1.26.0"
+service: myMultiStackResources
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  region: ${opt:region, 'us-east-1'}
+  stage: ${opt:stage, 'development'}
+  package:
+    individually: true
+
+plugins:
+  - serverless-webpack
+
+custom:
+  webpackIncludeModules: true
+
+functions:
+  cognitoAutoConfirm:
+    handler: src/handlers/cognito.autoConfirm
+
+resources:
+  - ${file(./resources/dynamodb/pings.yml)}
+  - ${file(./resources/cognito/userpool.yml)}
+  - ${file(./resources/cognito/identitypool.yml)}
+  - ${file(./resources/roles/cognito.yml)}
+  - ${file(./resources/cognito/identitypool_role_mapping.yml)}
